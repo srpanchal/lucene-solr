@@ -422,6 +422,11 @@ public class SolrReturnFields extends ReturnFields {
     }
     return reqFieldNames;
   }
+
+  @Override
+  public Set<String> getOkFieldNames(){
+    return okFieldNames;
+  }
   
   @Override
   public boolean hasPatternMatching() {

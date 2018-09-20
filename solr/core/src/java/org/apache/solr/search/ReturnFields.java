@@ -69,6 +69,8 @@ public abstract class ReturnFields {
   /** Returns <code>true</code> if the score should be returned. */
   public abstract boolean wantsScore();
 
+  public abstract Set<String> getOkFieldNames();
+
   /** Returns <code>true</code> if the fieldnames should be picked with a pattern */
   public abstract boolean hasPatternMatching();
 

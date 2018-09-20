@@ -38,6 +38,7 @@ public class DocSlice extends DocSetBase implements DocList {
   final float[] scores;  // optional score list
   final int matches;
   final float maxScore;
+  String[] reqFields;
 
   /**
    * Primary constructor for a DocSlice instance.
@@ -89,6 +90,13 @@ public class DocSlice extends DocSetBase implements DocList {
   @Override
   public int matches() { return matches; }
 
+  public String[] getReqFields() {
+    return reqFields;
+  }
+
+  public void setReqFields(String[] reqFields) {
+    this.reqFields = reqFields;
+  }
 
   @Override
   public boolean exists(int doc) {

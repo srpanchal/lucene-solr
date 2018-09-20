@@ -168,6 +168,7 @@ public class ExpandComponent extends SearchComponent implements PluginInfoInitia
     String[] fqs = params.getParams(ExpandParams.EXPAND_FQ);
     String qs = params.get(ExpandParams.EXPAND_Q);
     int limit = params.getInt(ExpandParams.EXPAND_ROWS, 5);
+    String[] fl = params.getParams(ExpandParams.EXPAND_FL);
 
     Sort sort = null;
 
@@ -421,6 +422,9 @@ public class ExpandComponent extends SearchComponent implements PluginInfoInitia
           scores[i] = scoreDoc.score;
         }
         DocSlice slice = new DocSlice(0, docs.length, docs, scores, topDocs.totalHits, topDocs.getMaxScore());
+        if(null != fl && fl.length > 0){
+          slice.setReqFields(fl);
+        }
 
         if(fieldType instanceof StrField) {
           final BytesRef bytesRef = ordBytes.get((int)groupValue);

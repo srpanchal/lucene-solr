@@ -44,7 +44,9 @@ import org.apache.solr.request.SolrQueryRequest;
 import org.apache.solr.schema.IndexSchema;
 import org.apache.solr.schema.SchemaField;
 import org.apache.solr.search.DocList;
+import org.apache.solr.search.DocSlice;
 import org.apache.solr.search.ReturnFields;
+import org.apache.solr.search.SolrReturnFields;
 import org.apache.solr.util.FastWriter;
 
 /** Base class for text-oriented response writers.
@@ -156,7 +158,14 @@ public abstract class TextResponseWriter implements PushWriter {
       writeDocuments(name, (ResultContext) val);
     } else if (val instanceof DocList) {
       // Should not happen normally
-      ResultContext ctx = new BasicResultContext((DocList)val, returnFields, null, null, req);
+      ReturnFields returnFieldsFinal = returnFields;
+      if(val instanceof DocSlice){
+        final String[] reqFields = ((DocSlice) val).getReqFields();
+        if(null != reqFields && reqFields.length > 0){
+          returnFieldsFinal = new SolrReturnFields(reqFields, req);
+        }
+      }
+      ResultContext ctx = new BasicResultContext((DocList)val, returnFieldsFinal, null, null, req);
       writeDocuments(name, ctx);
     // }
     // else if (val instanceof DocSet) {
