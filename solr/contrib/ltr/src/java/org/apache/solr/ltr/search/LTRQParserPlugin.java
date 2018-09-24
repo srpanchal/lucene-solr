@@ -34,6 +34,7 @@ import org.apache.solr.ltr.LTRScoringQuery;
 import org.apache.solr.ltr.LTRThreadModule;
 import org.apache.solr.ltr.SolrQueryRequestContextUtils;
 import org.apache.solr.ltr.model.LTRScoringModel;
+import org.apache.solr.ltr.norm.DynamicMinMaxNormalizer;
 import org.apache.solr.ltr.store.rest.ManagedFeatureStore;
 import org.apache.solr.ltr.store.rest.ManagedModelStore;
 import org.apache.solr.request.SolrQueryRequest;
@@ -60,6 +61,7 @@ public class LTRQParserPlugin extends QParserPlugin implements ResourceLoaderAwa
   // params for setting custom external info that features can use, like query
   // intent
   static final String EXTERNAL_FEATURE_INFO = "efi.";
+  static final String DYNAMIC_MIN_MAX_PARAM = "dmm.";
 
   private ManagedFeatureStore fr = null;
   private ManagedModelStore mr = null;
@@ -163,6 +165,13 @@ public class LTRQParserPlugin extends QParserPlugin implements ResourceLoaderAwa
       // Check if features are requested and if the model feature store and feature-transform feature store are the same
       final boolean featuresRequestedFromSameStore = (modelFeatureStoreName.equals(fvStoreName) || fvStoreName == null) ? extractFeatures:false;
 
+      ltrScoringModel.getNorms().stream()
+          .filter(norm -> norm instanceof DynamicMinMaxNormalizer)
+          .map(norm -> ((DynamicMinMaxNormalizer) norm))
+          .forEach(norm -> {
+            norm.setMin(Float.parseFloat(localParams.get(DYNAMIC_MIN_MAX_PARAM + norm.getMinParam().substring(1))));
+            norm.setMax(Float.parseFloat(localParams.get(DYNAMIC_MIN_MAX_PARAM + norm.getMaxParam().substring(1))));
+          });
       final LTRScoringQuery scoringQuery = new LTRScoringQuery(ltrScoringModel,
           extractEFIParams(localParams),
           featuresRequestedFromSameStore, threadManager);
