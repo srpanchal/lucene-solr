@@ -25,9 +25,10 @@ import java.util.LinkedHashMap;
  <pre>
  "norm" : {
  "class" : "org.apache.solr.ltr.norm.MinMaxNormalizer",
- "params" : { "min":"$min", "max":"$max" }
+ "params" : { "minParam":"$min", "maxParam":"$max" }
  }
  </pre>
+ And dmm.max and dmm.min values as query parameters.
  */
 public class DynamicMinMaxNormalizer extends Normalizer {
 
@@ -51,10 +52,6 @@ public class DynamicMinMaxNormalizer extends Normalizer {
   }
 
   public void setMin(String min) {
-    if(min.startsWith("$")){
-      this.minParam = min;
-      return;
-    }
     this.min = Float.parseFloat(min);
     updateDelta();
   }
@@ -69,10 +66,6 @@ public class DynamicMinMaxNormalizer extends Normalizer {
   }
 
   public void setMax(String max) {
-    if(max.startsWith("$")){
-      this.maxParam = max;
-      return;
-    }
     this.max = Float.parseFloat(max);
     updateDelta();
   }

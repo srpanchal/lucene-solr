@@ -62,6 +62,7 @@ public class LTRQParserPlugin extends QParserPlugin implements ResourceLoaderAwa
   // intent
   static final String EXTERNAL_FEATURE_INFO = "efi.";
   static final String DYNAMIC_MIN_MAX_PARAM = "dmm.";
+  static final String DYNAMIC_MIN_MAX_PARAM_DEFAULT_VALUE = "0";
 
   private ManagedFeatureStore fr = null;
   private ManagedModelStore mr = null;
@@ -169,8 +170,8 @@ public class LTRQParserPlugin extends QParserPlugin implements ResourceLoaderAwa
           .filter(norm -> norm instanceof DynamicMinMaxNormalizer)
           .map(norm -> ((DynamicMinMaxNormalizer) norm))
           .forEach(norm -> {
-            norm.setMin(Float.parseFloat(localParams.get(DYNAMIC_MIN_MAX_PARAM + norm.getMinParam().substring(1))));
-            norm.setMax(Float.parseFloat(localParams.get(DYNAMIC_MIN_MAX_PARAM + norm.getMaxParam().substring(1))));
+            norm.setMin(getDmmParameterValues(norm.getMinParam()));
+            norm.setMax(getDmmParameterValues(norm.getMaxParam()));
           });
       final LTRScoringQuery scoringQuery = new LTRScoringQuery(ltrScoringModel,
           extractEFIParams(localParams),
@@ -193,6 +194,10 @@ public class LTRQParserPlugin extends QParserPlugin implements ResourceLoaderAwa
       scoringQuery.setRequest(req);
 
       return new LTRQuery(scoringQuery, reRankDocs);
+    }
+
+    float getDmmParameterValues(String paramName){
+      return Float.parseFloat(localParams.get(DYNAMIC_MIN_MAX_PARAM + paramName, DYNAMIC_MIN_MAX_PARAM_DEFAULT_VALUE));
     }
   }
 
