@@ -112,6 +112,8 @@ public class DynamicMinMaxNormalizer extends Normalizer {
     final LinkedHashMap<String,Object> params = new LinkedHashMap<>(2, 1.0f);
     params.put("min", Float.toString(min));
     params.put("max", Float.toString(max));
+    params.put("minParam", minParam);
+    params.put("maxParam", maxParam);
     return params;
   }
 
